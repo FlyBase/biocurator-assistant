@@ -97,8 +97,6 @@ def send_to_gpt(section_type, text, prompts, default_prompt, max_tokens, encodin
             response_to_save = response['choices'][0]['message']['content']
             responses.append(response_to_save)
 
-            time.sleep(65)
-
     return responses
 
 
