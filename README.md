@@ -13,8 +13,8 @@ ChatGPT Curator is a Python-based tool designed for biocuration tasks. It retrie
 
 Configuration settings can be modified in `config.cfg`.
 
-- `MAX_TOKENS`: The maximum number of tokens that can be sent to GPT-3. Default is 4096.
-- `model`: The GPT-3 engine to be used. Default is `gpt-4`.
+- `MAX_TOKENS`: The maximum number of tokens that can be sent to ChatGPT. Default is 4096.
+- `model`: The ChatGPT engine to be used. Default is `gpt-4`.
 - `file_path`: The path to the YAML file containing the prompts. Default is `prompts.yaml`.
 
 ## How to Run
