@@ -170,7 +170,7 @@ if not article_data:
 # Initialize a dictionary to hold the article sections
 article_sections = {}
 
-# Create a whitelist of section titles you want to include
+# Create a ignore of section titles to skip.
 ignorelist = ['FIG']
 
 # Initialize a dictionary to collect text for each section type
@@ -180,7 +180,7 @@ section_text_dict = {}
 for document in article_data['documents']:
     for passage in document['passages']:
         section_type = passage['infons'].get('section_type', 'UNKNOWN').upper()
-        if section_type not in whitelist:
+        if section_type not in ignorelist:
             if section_type not in section_text_dict:
                 section_text_dict[section_type] = []
             section_text_dict[section_type].append(passage['text'])
