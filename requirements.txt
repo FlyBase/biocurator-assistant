@@ -1,0 +1,6 @@
+biopython
+PyYAML
+openai
+tiktoken
+requests
+nltk

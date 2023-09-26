@@ -1,0 +1,11 @@
+# Please leave the default unchanged unless you're sure you know what you're doing.
+default: "I will be sending you excerpts from a scientific article divided into sections.
+Please read each section carefully and answer the following prompts in the context of that specific section.
+Each section may contain no relevant information to the prompts. Sections have been broken down from a larger article.
+Please return a simple list of answers to the prompts in the order they are asked."
+
+genes: "Task: Please identify the Drosophila genes important to this paper mentioned in this section and write them as an unordered list. 
+Genes or their respective alleles should be mentioned several times or be a focus of experimentation in the paper.
+Ignore names with constructs (names like rut-GFP, rut-GAL4, rut-lacZ, etc) or listing alleles (rut1, rutMB1951, etc). Alleles should instead be displayed as a single gene (rut)."
+alleles: "Are there any notable alleles?"
+triage: "TBD"
