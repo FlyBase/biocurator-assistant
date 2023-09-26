@@ -34,6 +34,16 @@ docker run -e OPENAI_API_KEY=your_openai_api_key chatgpt_curator <pmc_id> <-f te
 - `<--test>`: OPTIONAL. Process the data without submitting to ChatGPT. Useful for determining token usage and checking submissions.
 - `<prompt_list>`: A space-separated list of prompt keys to use, e.g., genes alleles disease.
 
+#### Example commands
+- Run a gene query using the local test.json file (PMC still required but not used). This will submit data to ChatGPT.
+  - `docker run -e OPENAI_API_KEY=sk-xxxx chatgpt_curator PMC7541083 -f test.json genes`
+
+- Run a query by retrieving a paper from Pubmed Central and querying two prompts. This will submit data to ChatGPT.
+  - `docker run -e OPENAI_API_KEY=sk-xxxx chatgpt_curator PMC10499800 genes allele`
+
+- Run a test query by retrieving a paper from Pubmed Central and querying two prompts. This will NOT submit data to ChatGPT.
+  - `docker run -e OPENAI_API_KEY=sk-xxxx chatgpt_curator PMC10499800 genes allele --test`
+
 ### How to Modify Prompts
 Edit the prompts.yaml file to modify, add, or remove prompts.
 
