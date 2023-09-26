@@ -9,4 +9,5 @@ Genes or their respective alleles must be mentioned several times or be a focus 
 Ignore genes with constructs (genes that end in -GFP, -GAL4, -lacZ, etc) or listing alleles (rut1, rutMB1951, etc). Alleles should instead be displayed as a single gene (rut).
 When the list is assembled, please check over it using your knowledge of drosophila gene names and remove entries that are not genes and reduce allele names to their source gene."
 alleles: "Are there any notable alleles?"
-triage: "TBD"
+disease: "Task: Are there any mentions of human disease in this section? These diseases would be central to the paper and of interest for the research in this section.
+If so, please list them as an unordered list."
