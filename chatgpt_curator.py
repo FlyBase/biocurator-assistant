@@ -24,7 +24,13 @@ def count_tokens(text, encoding):
     tokenized_text = encoding.encode(text)
     return len(tokenized_text)
 
-def send_to_gpt(section_type, text, prompts, default_prompt, max_tokens, encoding, test_mode=False):
+def calculate_cost(all_input_tokens, all_output_tokens):
+    input_cost_per_token = 0.00003
+    output_cost_per_token = 0.00006
+    total_cost = (all_input_tokens * input_cost_per_token) + (all_output_tokens * output_cost_per_token)
+    return total_cost
+
+def send_to_gpt(section_type, text, prompts, default_prompt, max_tokens, encoding, overall_total_cost, test_mode=False):
     # Initialize variables
     default_tokens = count_tokens(default_prompt, encoding)
     prompts_tokens = sum(count_tokens(prompt, encoding) for prompt in prompts.values())
@@ -58,6 +64,8 @@ def send_to_gpt(section_type, text, prompts, default_prompt, max_tokens, encodin
 
     # Perform the API call for each text block
     total_token_tracker = 0
+    all_input_tokens = 0
+    all_output_tokens = 0
     start_time = time.time()
 
     for text_block in text_blocks:
@@ -88,6 +96,9 @@ def send_to_gpt(section_type, text, prompts, default_prompt, max_tokens, encodin
             total_prompt_tokens = response['usage']['prompt_tokens']
             total_completion_tokens = response['usage']['completion_tokens']
 
+            all_input_tokens += total_prompt_tokens
+            all_output_tokens += total_completion_tokens
+
             total_token_tracker += total_tokens_used  # Update the total tokens used
             print(f'Total tokens used: {total_tokens_used}')
             print(f'Actual prompt tokens: {total_prompt_tokens}')
@@ -99,8 +110,16 @@ def send_to_gpt(section_type, text, prompts, default_prompt, max_tokens, encodin
 
             time.sleep(65)
 
-    return responses
+    # Determine the cost.
+    # Input: $0.03 / 1K tokens
+    # Output: $0.06 / 1K tokens
+    if not test_mode:
+        total_cost_to_print = calculate_cost(all_input_tokens, all_output_tokens)
+        print(f"Section cost: ${total_cost_to_print:.2f}")
 
+        overall_total_cost += total_cost_to_print
+
+    return responses, overall_total_cost
 
 # Read config file
 config = configparser.ConfigParser()
@@ -193,15 +212,21 @@ for section_type in section_text_dict:
     print(section_type)
 print('-----------')
 
+overall_total_cost = 0
+
 # Calculate and print the token count and submission count for each section
 for section_type, section_texts in section_text_dict.items():
     combined_text = section_type + '\n' + ' '.join(section_texts)
 
     if args.test:
-        send_to_gpt(section_type, combined_text, prompts_dict, default_prompt, MAX_TOKENS, encoding, test_mode=True)
+        send_to_gpt(section_type, combined_text, prompts_dict, default_prompt, MAX_TOKENS, encoding, overall_total_cost, test_mode=True)
     else:
         # In regular mode, send the text to GPT-3
-        responses = send_to_gpt(section_type, combined_text, prompts_dict, default_prompt, MAX_TOKENS, encoding)
+        responses, overall_total_cost = send_to_gpt(section_type, combined_text, prompts_dict, default_prompt, MAX_TOKENS, encoding, overall_total_cost)
         print(f"Responses for section {section_type}:")
         for response in responses:
             print(response)
+
+if not args.test:
+    # Print the overall total cost.
+    print(f"Overall total cost: ${overall_total_cost:.2f}")
