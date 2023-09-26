@@ -97,6 +97,8 @@ def send_to_gpt(section_type, text, prompts, default_prompt, max_tokens, encodin
             response_to_save = response['choices'][0]['message']['content']
             responses.append(response_to_save)
 
+            time.sleep(65)
+
     return responses
 
 
@@ -171,7 +173,7 @@ if not article_data:
 article_sections = {}
 
 # Create a ignore of section titles to skip.
-ignorelist = ['FIG']
+ignorelist = ['FIG', 'ACK_FUND', 'REF']
 
 # Initialize a dictionary to collect text for each section type
 section_text_dict = {}
