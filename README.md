@@ -1,7 +1,7 @@
 # Biocurator Assistant with GPT-4
 
 ## Overview
-Biocurator Assistant is a Dockerized tool leveraging OpenAI's GPT-4 for biocuration tasks. It processes PDF documents, extracting and analyzing scientific data for biological research, and manages data flow using AI techniques.
+Biocurator Assistant is a Dockerized tool leveraging OpenAI's GPT-4 for biocuration tasks. It processes PDF or text documents, extracting and analyzing scientific data for biological research, and manages data flow using AI techniques.
 
 ## Requirements
 - Docker
@@ -18,7 +18,7 @@ The behavior of the Biocurator Assistant is configured using a prompts.yaml file
 ```docker run -v $(pwd)/input:/usr/src/app/input -v $(pwd)/output:/usr/src/app/output biocurator-assistant python assistant.py --api_key <openai-api-key>```
 
 - `<openai-api-key>`: Replace this with your actual OpenAI API key.
-- Place your PDF files in the `input` directory before running the container.
+- Place your PDF or text files in the `input` directory before running the container.
 - Output text files will be created in the `output` directory. These output files will follow the naming convention of ```PDF-name_prompt-title.txt```. For example, with a PDF named `zns11881` the resulting output file for a `genes` prompt would be `zns11881_genes.txt`
 
 ## Important Note About Cost

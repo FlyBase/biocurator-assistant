@@ -149,12 +149,13 @@ def main():
 
     input_dir = Path(args.input_dir)
 
-    for pdf_file in input_dir.glob('*.pdf'):
-        print(f"Processing file: {pdf_file}", flush=True)
-        file_id, assistant_file_id = upload_and_attach_file(client, pdf_file, assistant_id)
+    # Process the files.
+    for input_file in input_dir.glob('*'):
+        print(f"Processing file: {input_file}", flush=True)
+        file_id, assistant_file_id = upload_and_attach_file(client, input_file, assistant_id)
         
         # Process queries using threads
-        process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, args.yaml_file, args.output_dir, pdf_file)
+        process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, args.yaml_file, args.output_dir, input_file)
 
         # Remove the file_id from the assistant.
         my_updated_assistant = client.beta.assistants.update(
@@ -164,6 +165,7 @@ def main():
 
         # Delete the file.
         client.files.delete(file_id)
+
 
     # Delete the assistant.
     # Removing it seems to result in better results for subsequent runs? Less errors in file processing.
