@@ -1,13 +1,61 @@
-# Please leave the default unchanged unless you're sure you know what you're doing.
-default: "I will be sending you excerpts from a scientific article divided into sections.
-Please read each section carefully and answer the following prompts in the context of that specific section.
-Each section may contain no relevant information to the prompts. Sections have been broken down from a larger article.
-Please return a simple list of answers to the prompts in the order they are asked."
+genes: "Your task is to analyze the scientific publication provided and extract names of Drosophila genes that are mentioned within. 
+Focus on genes that are either highlighted multiple times or are central to the experimentation discussed in the paper. 
+List these genes in an unordered format.
 
-genes: "Task: Please identify the Drosophila genes important to this paper mentioned in this section and write them as an unordered list. 
-Genes or their respective alleles must be mentioned several times or be a focus of experimentation in the paper.
-Ignore genes with constructs (genes that end in -GFP, -GAL4, -lacZ, etc) or listing alleles (rut1, rutMB1951, etc). Alleles should instead be displayed as a single gene (rut).
-When the list is assembled, please check over it using your knowledge of drosophila gene names and remove entries that are not genes and reduce allele names to their source gene."
-alleles: "Are there any notable alleles?"
-disease: "Task: Are there any mentions of human disease in this section? These diseases would be central to the paper and of interest for the research in this section.
-If so, please list them as an unordered list."
+Please exclude any specific alleles, mutations, or gene constructs. 
+If an allele or modification is mentioned, list it as its base gene name 
+(e.g., 'rut1' or 'rutMB1951' should be listed simply as 'rut'). 
+Also, omit genes with constructs like -GFP, -GAL4, -lacZ, etc.
+
+After compiling the list, cross-check it against known Drosophila gene names 
+to ensure accuracy and remove any entries that do not meet these criteria. 
+The final list should be clear and concise, reflecting a high level of 
+expertise in Drosophila genetics and adherence to established nomenclature standards."
+
+alleles: "Your task is to meticulously analyze the provided scientific publication and 
+identify all Drosophila alleles that are mentioned. Focus on alleles that play a significant role 
+in the research, either being frequently referenced or central to the experimental 
+procedures or findings in the paper. Please compile these alleles into an unordered list.
+
+When listing the alleles, ensure each one is accurately represented in accordance 
+with the details provided in the publication. Pay close attention to the context 
+in which each allele is mentioned to ascertain its relevance to the study's objectives and findings.
+
+After assembling the list, review it to confirm the accuracy and relevance 
+of each allele within the scope of the research, ensuring compliance with 
+the established nomenclature and scientific standards. The final list should 
+be clear, concise, and reflect a thorough understanding of the paper's content related to Drosophila genetics."
+
+disease: "Your task is to thoroughly examine the provided scientific publication 
+and identify any human diseases that are referenced, particularly focusing on 
+those diseases that are being modeled in Drosophila as part of the research objectives. 
+Compile a list of these diseases, ensuring that each one is directly relevant to the study's goals or findings.
+
+In your analysis, pay special attention to how these human diseases are connected 
+to the Drosophila models. Identify diseases that are central to the paper, 
+such as those being used to understand specific genetic mechanisms or to simulate disease progression.
+
+Once you have compiled the list, review it to ensure that each disease 
+mentioned is integral to the research and not just a passing reference. 
+The final list should be concise, accurately reflecting the diseases that 
+are of primary importance to the study's objectives, and demonstrating 
+how Drosophila is used as a model organism to advance understanding of these human conditions."
+
+phys_int: "Your task is to meticulously review the provided scientific 
+publication to identify and list examples of physical interactions between proteins. 
+Focus specifically on interactions that are substantiated by commonly used experimental 
+methods in protein interaction studies. Examples of such methods include 
+co-immunoprecipitation, yeast two-hybrid screening, fluorescence resonance energy 
+transfer (FRET), bioluminescence resonance energy transfer (BRET), and affinity purification followed by mass spectrometry.
+
+For each instance of a protein-protein interaction, provide a brief description 
+of the interaction and specify the experimental method used to determine it. 
+Ensure that each interaction and method listed is directly cited or described 
+in the research paper, with a focus on their relevance to the study's objectives.
+
+After compiling your list, review it for accuracy and relevance. 
+Each entry should clearly state the proteins involved in the interaction, 
+the nature of their interaction, and the experimental method utilized to observe it. 
+The final list should be concise and informative, reflecting a deep understanding 
+of the study's approach to investigating protein-protein interactions and the 
+significance of these interactions within the broader context of the research."
