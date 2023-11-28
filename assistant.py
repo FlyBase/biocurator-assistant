@@ -7,7 +7,7 @@ import argparse
 import requests
 from pathlib import Path
 
-# Function to find an existing assistant by name
+# Function to find an existing assistant by name on the OpenAI platform.
 def find_assistant_by_name(client, name):
     response = client.beta.assistants.list()
     for assistant in response.data:
@@ -15,7 +15,10 @@ def find_assistant_by_name(client, name):
             return assistant
     return None
 
+# Function to create a new biocurator assistant on OpenAI with specified parameters.
 def create_biocurator_assistant(client, model, name='Biocurator', description='Assistant for Biocuration', tools=None):
+    # Detailed instructions for the assistant are defined here.
+    # This includes the expected tasks and how to approach them.
     instructions = (
         "As a biocurator, your primary responsibility is to meticulously organize, annotate, "
         "and validate biological data derived from scientific research. This includes accurately "
@@ -35,6 +38,7 @@ def create_biocurator_assistant(client, model, name='Biocurator', description='A
         "You are capable of opening and analyzing the file, remember that. And carry out the request."
     )
 
+    # Creating the assistant with the provided name, description, model, and tools.
     assistant = client.beta.assistants.create(
         name=name,
         description=description,
@@ -43,19 +47,20 @@ def create_biocurator_assistant(client, model, name='Biocurator', description='A
         instructions=instructions
     )
     return assistant
-
-# Function to upload a file to OpenAI and attach it to the assistant
+    
+# Function to upload a file to OpenAI and attach it to the assistant for processing.
 def upload_and_attach_file(client, file_path, assistant_id):
 
-    # Upload file
+    # Uploading the file to OpenAI.
     uploaded_file = client.files.create(file=Path(file_path), purpose='assistants')
     file_id = uploaded_file.id
 
-    # Attach file to assistant
+    # Attaching the uploaded file to the assistant.
     assistant_file = client.beta.assistants.files.create(assistant_id=assistant_id, file_id=file_id)
     assistant_file_id = assistant_file.id
     return file_id, assistant_file_id
 
+# Function to delete a file from OpenAI's platform.
 def delete_file_from_openai(file_id):
     try:
         response = openai.File.delete(file_id)
@@ -64,28 +69,31 @@ def delete_file_from_openai(file_id):
     except openai.error.OpenAIError as e:
         print(f"Error: {e}")
 
+# Function to process queries using the Biocurator assistant.
 def process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, yaml_file, output_dir, pdf_file):
 
-    # Create the thread.
+    # Creating a new thread for processing.
     thread = client.beta.threads.create()
     thread_id = thread.id
 
     list_of_messages = []
 
-    # Load the yaml file and create the messages.
+    # Loading prompts from the YAML file.
     prompts = yaml.safe_load(open(yaml_file, 'r'))
     for prompt, value in prompts.items():
         print('Processing prompt: ' + prompt, flush=True)
+        # Sending each prompt to the assistant for processing.
         thread_message = client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
         content=value,
         file_ids=[file_id])
 
+        # Initiating the processing run.
         run = client.beta.threads.runs.create(thread_id=thread_id, assistant_id=assistant_id)
         run_id = run.id
 
-        # Every 5 seconds, check if the run has completed.
+        # Checking periodically if the run has completed.
         while True:
             run = client.beta.threads.runs.retrieve(
             thread_id=thread_id,
@@ -98,27 +106,24 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
                 print(f"Run failed: {run.last_error}", flush=True)
                 raise Exception("Run failed.")
                 
-        # Retrieve the messages from the run.
+        # Retrieving and processing the messages from the run.
         messages = client.beta.threads.messages.list(
         thread_id=thread.id
         )
-
-        # Extract the message content
         first_message = messages.data[0]
-
-        # Assuming the first content of the message is of type 'text'
         first_message_content = first_message.content[0].text.value
 
-        # Remove the citations for now, we can revisit this later.
+        # Cleaning the text content by removing citations.
         final_text = re.sub(r"【.*?】", "", first_message_content)
 
-        # Write the response to the output file
+        # Saving the processed content to an output file.
         output_file = Path(output_dir) / (pdf_file.stem + '_' + prompt + '.txt')
         with open(output_file, 'w') as f:
             f.write(final_text)
 
 
 def main():
+    # Parsing command-line arguments for the script.
     parser = argparse.ArgumentParser(description='Process PDFs with OpenAI GPT-4 and Biocurator Assistant')
     parser.add_argument('--input_dir', default='input', help='Input directory containing PDFs (default: input)')
     parser.add_argument('--output_dir', default='output', help='Output directory for responses (default: output)')
@@ -127,11 +132,13 @@ def main():
     parser.add_argument('--api_key', help='OpenAI API key', required=True)
     args = parser.parse_args()
 
+    # Initializing the OpenAI client with the provided API key.
     client = OpenAI(api_key=args.api_key,)
 
-    # Check if the Biocurator assistant already exists
+    # Checking for an existing Biocurator assistant.
     existing_biocurator = find_assistant_by_name(client, 'Biocurator')
 
+    # Handling the existing or new assistant creation.
     if existing_biocurator:
         assistant_id = existing_biocurator.id
         print(f"Found existing Biocurator assistant with ID: {assistant_id}", flush=True)
@@ -149,26 +156,22 @@ def main():
 
     input_dir = Path(args.input_dir)
 
-    # Process the files.
+    # Processing each file in the input directory.
     for input_file in input_dir.glob('*'):
         print(f"Processing file: {input_file}", flush=True)
         file_id, assistant_file_id = upload_and_attach_file(client, input_file, assistant_id)
         
-        # Process queries using threads
+        # Running the biocuration process on each file.
         process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, args.yaml_file, args.output_dir, input_file)
 
-        # Remove the file_id from the assistant.
+        # Cleaning up by removing the file ID from the assistant and deleting the file.
         my_updated_assistant = client.beta.assistants.update(
         assistant_id,
         file_ids=[],
         )
-
-        # Delete the file.
         client.files.delete(file_id)
 
-
-    # Delete the assistant.
-    # Removing it seems to result in better results for subsequent runs? Less errors in file processing.
+    # Deleting the assistant after processing is complete.
     print(f"Deleting assistant: {assistant_id}", flush=True)
     response = client.beta.assistants.delete(assistant_id)
     print(response)
