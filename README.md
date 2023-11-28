@@ -20,3 +20,6 @@ The behavior of the Biocurator Assistant is configured using a prompts.yaml file
 - `<openai-api-key>`: Replace this with your actual OpenAI API key.
 - Place your PDF files in the `input` directory before running the container.
 - Output text files will be created in the `output` directory. These output files will follow the naming convention of ```PDF-name_prompt-title.txt```. For example, with a PDF named `zns11881` the resulting output file for a `genes` prompt would be `zns11881_genes.txt`
+
+## Important Note About Cost
+Processing PDFs using OpenAI's "assistants" approach uses around **300k+ context tokens** for each moderately-sized scientific publication. The total costs (as of Nov 28, 2023) are around **$2 per publication** for ~4 prompts. Please keep this in mind when running the script. Converting PDF -> text beforehand may reduce this cost (currently being tested).
