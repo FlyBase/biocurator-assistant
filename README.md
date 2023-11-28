@@ -15,7 +15,7 @@ The behavior of the Biocurator Assistant is configured using a prompts.yaml file
 ```docker build -t biocurator-assistant .```
 
 ### Run the Docker Container
-```docker run -v $(pwd)/input:/usr/src/app/input -v $(pwd)/output:/usr/src/app/output biocurator-assistant python chatgpt_curator.py --api_key <openai-api-key>```
+```docker run -v $(pwd)/input:/usr/src/app/input -v $(pwd)/output:/usr/src/app/output biocurator-assistant python assistant.py --api_key <openai-api-key>```
 
 - `<openai-api-key>`: Replace this with your actual OpenAI API key.
 - Place your PDF files in the `input` directory before running the container.
