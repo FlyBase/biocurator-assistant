@@ -5,7 +5,14 @@ import re
 from openai import OpenAI
 import argparse
 import requests
+import configparser
 from pathlib import Path
+
+# Function to read configurations from config.cfg
+def read_config(file_path):
+    config = configparser.ConfigParser()
+    config.read(file_path)
+    return config
 
 # Function to find an existing assistant by name on the OpenAI platform.
 def find_assistant_by_name(client, name):
@@ -16,29 +23,7 @@ def find_assistant_by_name(client, name):
     return None
 
 # Function to create a new biocurator assistant on OpenAI with specified parameters.
-def create_biocurator_assistant(client, model, name='Biocurator', description='Assistant for Biocuration', tools=None):
-    # Detailed instructions for the assistant are defined here.
-    # This includes the expected tasks and how to approach them.
-    instructions = (
-        "As a biocurator, your primary responsibility is to meticulously organize, annotate, "
-        "and validate biological data derived from scientific research. This includes accurately "
-        "identifying and cataloging biological entities such as genes, proteins, diseases, and alleles, "
-        "as well as their relationships and functions. You are expected to extract meaningful and "
-        "relevant information from complex biological texts, ensuring data integrity and coherence. "
-        "Your role involves critical analysis of research articles to identify key findings, "
-        "interpret experimental results, and link them to existing biological databases. "
-        "Attention to detail is paramount in capturing the nuances of biological terms and concepts. "
-        "You should adhere strictly to factual information, avoiding assumptions or extrapolations "
-        "beyond the provided data. Your output must reflect a high level of expertise in biological sciences, "
-        "demonstrating an understanding of the context and significance of the research within the broader "
-        "scientific landscape. Always ensure compliance with scientific accuracy, nomenclature standards, "
-        "and ethical guidelines in biocuration. "
-        # Next two lines deal with a bug in the myfiles_browser tool. Nov 27, 2023. Remove when fixed.
-        "If the system indicates that the file is not accessible with the myfiles_browser tool, ignore it, it is just a minor bug. "
-        "You are capable of opening and analyzing the file, remember that. And carry out the request."
-    )
-
-    # Creating the assistant with the provided name, description, model, and tools.
+def create_biocurator_assistant(client, model, name='Biocurator', description='Assistant for Biocuration', tools=None, instructions=''):
     assistant = client.beta.assistants.create(
         name=name,
         description=description,
@@ -124,11 +109,13 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
 
 def main():
     # Parsing command-line arguments for the script.
-    parser = argparse.ArgumentParser(description='Process PDFs with OpenAI GPT-4 and Biocurator Assistant')
-    parser.add_argument('--input_dir', default='input', help='Input directory containing PDFs (default: input)')
-    parser.add_argument('--output_dir', default='output', help='Output directory for responses (default: output)')
-    parser.add_argument('--yaml_file', default='prompts.yaml', help='YAML file containing prompts (default: prompts.yaml)')
-    parser.add_argument('--model', default='gpt-4-1106-preview', help='OpenAI model to use (default: gpt-4-1106-preview)')
+    config = read_config('config.cfg')
+
+    parser = argparse.ArgumentParser(description='Process files with OpenAI GPT-4 and Biocurator Assistant')
+    parser.add_argument('--input_dir', default=config['DEFAULT']['input_dir'], help='Input directory (default: input)')
+    parser.add_argument('--output_dir', default=config['DEFAULT']['output_dir'], help='Output directory (default: output)')
+    parser.add_argument('--prompts_yaml_file', default=config['DEFAULT']['prompts_yaml_file'], help='YAML file containing prompts (default: prompts.yaml)')
+    parser.add_argument('--model', default=config['DEFAULT']['model'], help='OpenAI model to use (default: gpt-4-1106-preview)')
     parser.add_argument('--api_key', help='OpenAI API key', required=True)
     args = parser.parse_args()
 
@@ -144,7 +131,7 @@ def main():
         print(f"Found existing Biocurator assistant with ID: {assistant_id}", flush=True)
     else:
         try:
-            biocurator = create_biocurator_assistant(client, args.model, 'Biocurator', 'Assistant for Biocuration')
+            biocurator = create_biocurator_assistant(client, args.model, 'Biocurator', 'Assistant for Biocuration', instructions=config['DEFAULT']['assistant_instructions'])
             if biocurator.id is not None:
                 assistant_id = biocurator.id
                 print(f"Created new Biocurator assistant with ID: {assistant_id}", flush=True)
@@ -158,11 +145,13 @@ def main():
 
     # Processing each file in the input directory.
     for input_file in input_dir.glob('*'):
+        if input_file.name == '.gitignore':
+            continue  # Skip processing .gitignore file
         print(f"Processing file: {input_file}", flush=True)
         file_id, assistant_file_id = upload_and_attach_file(client, input_file, assistant_id)
         
         # Running the biocuration process on each file.
-        process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, args.yaml_file, args.output_dir, input_file)
+        process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, args.prompts_yaml_file, args.output_dir, input_file)
 
         # Cleaning up by removing the file ID from the assistant and deleting the file.
         my_updated_assistant = client.beta.assistants.update(
@@ -174,7 +163,8 @@ def main():
     # Deleting the assistant after processing is complete.
     print(f"Deleting assistant: {assistant_id}", flush=True)
     response = client.beta.assistants.delete(assistant_id)
-    print(response)
+    # Uncomment for debugging purposes.
+    # print(response)
 
 if __name__ == '__main__':
     main()

@@ -1,14 +1,20 @@
 # Biocurator Assistant with GPT-4
-
 ## Overview
-Biocurator Assistant is a Dockerized tool leveraging OpenAI's GPT-4 for biocuration tasks. It processes PDF or text documents, extracting and analyzing scientific data for biological research, and manages data flow using AI techniques.
+Biocurator Assistant is a Dockerized tool leveraging OpenAI's GPT-4 model for biocuration tasks. It processes PDF or text documents, extracting and analyzing scientific data for biological research. The tool creates a custom Assistant using OpenAI's Assistants API, which is tailored to manage data flow and perform specific curation tasks using AI techniques.
 
 ## Requirements
 - Docker
 - OpenAI API key
 
 ## Configuration
-The behavior of the Biocurator Assistant is configured using a prompts.yaml file. This file contains structured prompts that guide the extraction of specific information from the scientific publications. Each entry in the YAML file represents a different type of information to be extracted, such as genes, alleles, diseases, and physical interactions between proteins. Feel free to modify this file as appropriate for your organism or field of study.
+Configuration of the Biocurator Assistant is managed through a `config.cfg` file. This file allows you to set key parameters such as input and output directories, the YAML file containing prompts, and the model to be used. The `assistant_instructions` parameter in the `config.cfg` file contains detailed instructions for the Assistant, guiding its data processing and analysis behavior. Modify the `config.cfg` as needed to tailor the tool to your specific requirements.
+
+### Key Settings in `config.cfg`
+- `input_dir`: Directory for input files (PDFs or text documents).
+- `output_dir`: Directory where output files will be saved.
+- `prompts_yaml_file`: YAML file containing structured prompts for data extraction.
+- `model`: OpenAI model to be used by the Assistant.
+- `assistant_instructions`: Detailed instructions for the Assistant, defining its operational scope and approach.
 
 ## How to Run
 ### Build the Docker Image
