@@ -44,8 +44,9 @@ disease: "Investigate the publication for descriptions or uses of Drosophila
 as models of human disease. Identify any experimental data that show
 mutation of Drosophila genes, introduction of human genes into flies, 
 chemical exposure, infection, or environmental changes leading to 
-disease phenotypes. Distinguish between studies that are high priority 
-for disease curation and those that are not. If the publication fits any of the criteria
+disease phenotypes. The publication should use Drosophila in an active manner
+that models a human disease and not just mention diseases without experimental
+evidence to create a drosophila model. If the publication fits any of the criteria
 previously mentioned, please simply write 'disease: yes' in the output. Otherwise, if there are no
 disease models, please simply write 'disease: no' in the output."
 
