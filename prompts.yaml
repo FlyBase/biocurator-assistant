@@ -4,8 +4,8 @@ Specifically, check if any genetic objects such as genes, alleles,
 aberrations, including non-melanogaster objects, are mentioned. 
 Confirm if the paper lacks any such genetic entities, indicating it 
 contains no curatable material in this context. If the paper contains
-no curatable material, please simply write 'nocur: yes' in the output. Otherwise,
-if there is curatable material, please simply write 'nocur: no' in the output."
+no curatable material, as described previously please simply write 'nocur: yes' in the output. 
+Otherwise, please simply write 'nocur: no' in the output."
 
 phys_int: "Review the publication for reports on physical interactions 
 involving D. melanogaster proteins or RNA. Look for methods like yeast 
