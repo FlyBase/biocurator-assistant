@@ -3,7 +3,9 @@ publication and determine if there is any genetically curatable material.
 Specifically, check if any genetic objects such as genes, alleles, 
 aberrations, including non-melanogaster objects, are mentioned. 
 Confirm if the paper lacks any such genetic entities, indicating it 
-contains no curatable material in this context."
+contains no curatable material in this context. If there is no genetically curatable material,
+please use True when filling out the task answer. If there is gentically curatable material,
+as described above, please use False when filling out the task answer."
 
 phys_int: "Review the publication for reports on physical interactions 
 involving D. melanogaster proteins or RNA. Look for methods like yeast 
