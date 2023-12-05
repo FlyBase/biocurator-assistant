@@ -89,7 +89,6 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
                 print(f"Run Status: {run.status}")
                 print(f"Run Cancelled At: {run.cancelled_at}")
                 print(f"Run Completed At: {run.completed_at}")
-                print(f"Run Expired At: {run.expired_at}")
                 print(f"Run Failed At: {run.failed_at}")
                 print(f"Run Last Error: {run.last_error}")
                 print("Proceeding to the next prompt.", flush=True)
@@ -100,13 +99,27 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
                 thread_id=thread_id,
                 run_id=run_id,
             )
-            if run.completed_at is not None:
+
+            # The status of the run step, which can be either in_progress, cancelled, failed, completed, or expired.
+
+            if run.status == 'completed':
+                break
+            if run.status == 'failed':
+                if run.last_error is not None:
+                    print(f"Run failed: {run.last_error}", flush=True)
+                raise Exception("Run failed.")
+            if run.status == 'cancelled':
+                print("Run was cancelled.", flush=True)
+                print("This may be due to a timeout or an error.", flush=True)
+                print("Proceeding to the next prompt.", flush=True)
+                break
+            if run.status == 'expired':
+                print("Run expired.", flush=True)
+                print("This may be due to a timeout or an error.", flush=True)
+                print("Proceeding to the next prompt.", flush=True)
                 break
             time.sleep(5)
-            if run.last_error is not None:
-                print(f"Run failed: {run.last_error}", flush=True)
-                raise Exception("Run failed.")
-                
+
         # Retrieving and processing the messages from the run.
         messages = client.beta.threads.messages.list(
         thread_id=thread.id
