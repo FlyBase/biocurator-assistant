@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Function to read configurations from config.cfg
 def read_config(file_path):
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=None)
     config.read(file_path)
     return config
 

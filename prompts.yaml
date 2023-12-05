@@ -3,18 +3,13 @@ publication and determine if there is any genetically curatable material.
 Specifically, check if any genetic objects such as genes, alleles, 
 aberrations, including non-melanogaster objects, are mentioned. 
 Confirm if the paper lacks any such genetic entities, indicating it 
-contains no curatable material in this context. If the paper contains
-no curatable material, as described previously please simply write 'nocur: yes' in the output. 
-Otherwise, please simply write 'nocur: no' in the output."
+contains no curatable material in this context."
 
 phys_int: "Review the publication for reports on physical interactions 
 involving D. melanogaster proteins or RNA. Look for methods like yeast 
 two-hybrid, co-immunoprecipitation (Co-IP), GST pull-down, miRNA luciferase 
 assays, and others. Detail any protein-protein, protein-RNA interactions, 
-but exclude protein-DNA interactions from this search. If the publication contains
-any of these physical interactions, please simply write 'phys_int: yes' in the output.
-Otherwise, if there are no physical interactions, 
-please simply write 'phys_int: no' in the output."
+but exclude protein-DNA interactions from this search."
 
 new_al: "Scrutinize the scientific publication to identify any mention 
 of new classical mutant alleles or chromosomal 
@@ -24,21 +19,16 @@ techniques such as EMS or CRISPR-induced mutations, P-element
 excisions or insertions, and chromosomal deletions or duplications. 
 Report any findings of classical genetic modifications. Remember, these alleles
 must be NEWLY CREATED in this publication and not obtained from stock centers
-or other laboratories. Only new alleles are considered for curation.
-If the publication details the creation of new alleles by the authors, 
-please respond with 'new_al: yes'. If there are no new alleles reported, 
-your response should be 'new_al: no'."
+or other laboratories. Only new alleles are considered for curation. Also, 
+it's important to remember that these classical alleles would NOT be used
+in transgenic expression systems such as GAL4/UAS or RNAi, for example."
 
 new_transg: "Examine the publication for the creation of new transgenic constructs. 
 This should include any Drosophila gene or a foreign gene introduced into the fly genome, 
 such as GAL4 or a human gene. Identify if the study mentions UAS transgenes, 
 genomic rescue transgenes, or RNAi transgenes. Remember, these transgenic contructs
 must be NEWLY CREATED in this publication and not obtained from stock centers
-or other laboratories. Only new transgenic contructs are considered for curation.
-If the publication contains any new transgenic constructs,
-please simply write 'new_transg: yes' in the output. 
-Otherwise, if there are no new transgenic constructs,
-please simply write 'new_transg: no' in the output."
+or other laboratories. Only new transgenic contructs are considered for curation."
 
 disease: "Investigate the publication for descriptions or uses of Drosophila 
 as models of human disease. Identify any experimental data that show
@@ -46,9 +36,7 @@ mutation of Drosophila genes, introduction of human genes into flies,
 chemical exposure, infection, or environmental changes leading to 
 disease phenotypes. The publication should use Drosophila in an active manner
 that models a human disease and not just mention diseases without experimental
-evidence to create a drosophila model. If the publication fits any of the criteria
-previously mentioned, please simply write 'disease: yes' in the output. Otherwise, if there are no
-disease models, please simply write 'disease: no' in the output."
+evidence to create a drosophila model."
 
 # neur_exp: "As a biocurator focusing on VFB expression curation, 
 # # analyze the scientific publication for any mention of Dmel driver 
