@@ -13,6 +13,7 @@ Configuration of the Biocurator Assistant is managed through a `config.cfg` file
 - `input_dir`: Directory for input files (PDFs or text documents).
 - `output_dir`: Directory where output files will be saved.
 - `prompts_yaml_file`: YAML file containing structured prompts for data extraction.
+- `timeout_seconds`: The time in seconds to wait before timing out with an OpenAI API Assistant run.
 - `model`: OpenAI model to be used by the Assistant.
 - `assistant_instructions`: Detailed instructions for the Assistant, defining its operational scope and approach.
 
