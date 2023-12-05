@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Function to read configurations from config.cfg
 def read_config(file_path):
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=None)
     config.read(file_path)
     return config
 
@@ -55,7 +55,7 @@ def delete_file_from_openai(file_id):
         print(f"Error: {e}")
 
 # Function to process queries using the Biocurator assistant.
-def process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, yaml_file, output_dir, pdf_file):
+def process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, yaml_file, output_dir, pdf_file, timeout_seconds):
 
     # Creating a new thread for processing.
     thread = client.beta.threads.create()
@@ -79,18 +79,47 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         run_id = run.id
 
         # Checking periodically if the run has completed.
+        start_time = time.time()
         while True:
+            current_time = time.time()
+            if current_time - start_time > timeout_seconds:
+                print(f"Timeout: The operation took longer than {timeout_seconds} seconds.")
+                print("-----", flush=True)
+                print(f"Diagnostic information:")
+                print(f"Run Status: {run.status}")
+                print(f"Run Cancelled At: {run.cancelled_at}")
+                print(f"Run Completed At: {run.completed_at}")
+                print(f"Run Failed At: {run.failed_at}")
+                print(f"Run Last Error: {run.last_error}")
+                print("Proceeding to the next prompt.", flush=True)
+                print("-----", flush=True)
+                break
+
             run = client.beta.threads.runs.retrieve(
-            thread_id=thread_id,
-            run_id=run_id,
+                thread_id=thread_id,
+                run_id=run_id,
             )
-            if run.completed_at is not None:
+
+            # The status of the run step, which can be either in_progress, cancelled, failed, completed, or expired.
+
+            if run.status == 'completed':
+                break
+            if run.status == 'failed':
+                if run.last_error is not None:
+                    print(f"Run failed: {run.last_error}", flush=True)
+                raise Exception("Run failed.")
+            if run.status == 'cancelled':
+                print("Run was cancelled.", flush=True)
+                print("This may be due to a timeout or an error.", flush=True)
+                print("Proceeding to the next prompt.", flush=True)
+                break
+            if run.status == 'expired':
+                print("Run expired.", flush=True)
+                print("This may be due to a timeout or an error.", flush=True)
+                print("Proceeding to the next prompt.", flush=True)
                 break
             time.sleep(5)
-            if run.last_error is not None:
-                print(f"Run failed: {run.last_error}", flush=True)
-                raise Exception("Run failed.")
-                
+
         # Retrieving and processing the messages from the run.
         messages = client.beta.threads.messages.list(
         thread_id=thread.id
@@ -106,32 +135,28 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         with open(output_file, 'w') as f:
             f.write(final_text)
 
-
 def main():
-    # Parsing command-line arguments for the script.
+    # Read configurations from the config.cfg file
     config = read_config('config.cfg')
 
+    # Parsing command-line argument for the API key
     parser = argparse.ArgumentParser(description='Process files with OpenAI GPT-4 and Biocurator Assistant')
-    parser.add_argument('--input_dir', default=config['DEFAULT']['input_dir'], help='Input directory (default: input)')
-    parser.add_argument('--output_dir', default=config['DEFAULT']['output_dir'], help='Output directory (default: output)')
-    parser.add_argument('--prompts_yaml_file', default=config['DEFAULT']['prompts_yaml_file'], help='YAML file containing prompts (default: prompts.yaml)')
-    parser.add_argument('--model', default=config['DEFAULT']['model'], help='OpenAI model to use (default: gpt-4-1106-preview)')
     parser.add_argument('--api_key', help='OpenAI API key', required=True)
     args = parser.parse_args()
 
-    # Initializing the OpenAI client with the provided API key.
-    client = OpenAI(api_key=args.api_key,)
+    # Initializing the OpenAI client with the API key from the command line
+    client = OpenAI(api_key=args.api_key)
 
-    # Checking for an existing Biocurator assistant.
+    # Checking for an existing Biocurator assistant
     existing_biocurator = find_assistant_by_name(client, 'Biocurator')
 
-    # Handling the existing or new assistant creation.
+    # Handling the existing or new assistant creation
     if existing_biocurator:
         assistant_id = existing_biocurator.id
         print(f"Found existing Biocurator assistant with ID: {assistant_id}", flush=True)
     else:
         try:
-            biocurator = create_biocurator_assistant(client, args.model, 'Biocurator', 'Assistant for Biocuration', instructions=config['DEFAULT']['assistant_instructions'])
+            biocurator = create_biocurator_assistant(client, config['DEFAULT']['model'], 'Biocurator', 'Assistant for Biocuration', instructions=config['DEFAULT']['assistant_instructions'])
             if biocurator.id is not None:
                 assistant_id = biocurator.id
                 print(f"Created new Biocurator assistant with ID: {assistant_id}", flush=True)
@@ -141,29 +166,29 @@ def main():
             print(f"Error: {e}")
             return
 
-    input_dir = Path(args.input_dir)
+    input_dir = Path(config['DEFAULT']['input_dir'])
 
-    # Processing each file in the input directory.
+    # Processing each file in the input directory
     for input_file in input_dir.glob('*'):
         if input_file.name == '.gitignore':
             continue  # Skip processing .gitignore file
         print(f"Processing file: {input_file}", flush=True)
         file_id, assistant_file_id = upload_and_attach_file(client, input_file, assistant_id)
-        
-        # Running the biocuration process on each file.
-        process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, args.prompts_yaml_file, args.output_dir, input_file)
 
-        # Cleaning up by removing the file ID from the assistant and deleting the file.
+        # Running the biocuration process on each file
+        process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, config['DEFAULT']['prompts_yaml_file'], config['DEFAULT']['output_dir'], input_file, int(config['DEFAULT']['timeout_seconds']))
+
+        # Cleaning up by removing the file ID from the assistant and deleting the file
         my_updated_assistant = client.beta.assistants.update(
-        assistant_id,
-        file_ids=[],
+            assistant_id,
+            file_ids=[],
         )
         client.files.delete(file_id)
 
-    # Deleting the assistant after processing is complete.
+    # Deleting the assistant after processing is complete
     print(f"Deleting assistant: {assistant_id}", flush=True)
     response = client.beta.assistants.delete(assistant_id)
-    # Uncomment for debugging purposes.
+    # Uncomment for debugging purposes
     # print(response)
 
 if __name__ == '__main__':
