@@ -100,8 +100,6 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
                 run_id=run_id,
             )
 
-            # The status of the run step, which can be either in_progress, cancelled, failed, completed, or expired.
-
             if run.status == 'completed':
                 break
             if run.status == 'failed':
