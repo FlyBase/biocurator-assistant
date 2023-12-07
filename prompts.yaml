@@ -14,8 +14,10 @@ phys_int: "Review the publication for reports on physical interactions
 involving D. melanogaster proteins or RNA. Look for methods like yeast 
 two-hybrid, co-immunoprecipitation (Co-IP), GST pull-down, miRNA luciferase 
 assays, and others. Detail any protein-protein, protein-RNA interactions, 
-but exclude protein-DNA interactions from this search. If there is physical interaction data,
-as described previously, please use true when filling out the found_data. 
+but exclude protein-DNA interactions from this search. Be sure to look for descriptions of 
+actual interactions and not just implications of interactions in the publication.
+If there is physical interaction data, as described previously, 
+please use true when filling out the found_data. 
 If not, please use false when filling out the found_data."
 
 new_al: "Scrutinize the scientific publication to identify any mention 
