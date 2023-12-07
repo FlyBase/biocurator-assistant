@@ -54,24 +54,7 @@ def delete_file_from_openai(file_id):
     except openai.error.OpenAIError as e:
         print(f"Error: {e}")
 
-# Function to process queries using the Biocurator assistant.
-def process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, yaml_file, output_dir, pdf_file, timeout_seconds):
-
-    # Creating a new thread for processing.
-    thread = client.beta.threads.create()
-    thread_id = thread.id
-
-    # Loading prompts from the YAML file.
-    prompts = yaml.safe_load(open(yaml_file, 'r'))
-    for prompt, value in prompts.items():
-        print('Processing prompt: ' + prompt, flush=True)
-        # Sending each prompt to the assistant for processing.
-        thread_message = client.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=value,
-        file_ids=[file_id])
-
+def run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds):
         # Initiating the processing run.
         run = client.beta.threads.runs.create(thread_id=thread_id, assistant_id=assistant_id)
         run_id = run.id
@@ -118,18 +101,66 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
 
         # Retrieving and processing the messages from the run.
         messages = client.beta.threads.messages.list(
-        thread_id=thread.id
+        thread_id=thread_id
         )
+        
         first_message = messages.data[0]
         first_message_content = first_message.content[0].text.value
 
         # Cleaning the text content by removing citations.
         final_text = re.sub(r"【.*?】", "", first_message_content)
 
+        return final_text
+
+# Function to process queries using the Biocurator assistant.
+def process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, yaml_file, output_dir, pdf_file, timeout_seconds):
+
+    # Creating a new thread for processing.
+    thread = client.beta.threads.create()
+    thread_id = thread.id
+
+    # Loading prompts from the YAML file.
+    prompts = yaml.safe_load(open(yaml_file, 'r'))
+    for prompt, value in prompts.items():
+        print('Processing prompt: ' + prompt, flush=True)
+        # Sending each prompt to the assistant for processing.
+        thread_message = client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content=value,
+        file_ids=[file_id])
+
+        # Running the thread and retrieving the last message.
+        final_text = run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds)
+
+        # Create the error correction prompt.
+        intro_message = '''Below is the prompt you were given 
+        for the last message and the output you returned. 
+        DO NOT REFERENCING THE FILE and please check to see if your 
+        reasoning matches the decision in the JSON you created. 
+        Use the logic spelled out at the end of your last prompt below. 
+        Typically, it does match, but sometimes there's a mistake. 
+        If it looks OK, please output exactly the same JSON as before. 
+        If it looks wrong, please correct the decision and output the fixed JSON. 
+        Do not output any additional text outside of the JSON. 
+        Thank you.'''
+
+        # Combine the intro_message with the prompt and the final_text separated by a newline.
+        error_correction_prompt = intro_message + "\n\n" + value + "\n\n" + final_text
+
+        # Add this to the thread as a message.
+        thread_message = client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content=error_correction_prompt)
+
+        # Run the thread again and retrieve the last message.
+        final_text_to_write = run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds)
+
         # Saving the processed content to an output file.
         output_file = Path(output_dir) / (pdf_file.stem + '_' + prompt + '.txt')
         with open(output_file, 'w') as f:
-            f.write(final_text)
+            f.write(final_text_to_write)
 
 def main():
     # Read configurations from the config.cfg file
