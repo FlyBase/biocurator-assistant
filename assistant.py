@@ -142,8 +142,8 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         Typically, it does match, but sometimes there's a mistake. 
         If it looks OK, please output the same JSON as before and add a new field "adjustments"
         where you describe why you kept the output the same.
-        If it looks wrong, please correct the data_found field, output the fixed JSON with the new field
-        "adjustments", and describe why you changed the output from the previous prompt. 
+        If it looks wrong, please change the data_found field ONLY, output the fixed JSON with the new field
+        "adjustments", and describe why you changed the output from the previous prompt in the "adjustments" field. 
         Do not output any additional text outside of the JSON. Do not edit the existing reasoning field.
         Thank you.'''
 
