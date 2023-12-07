@@ -144,7 +144,7 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         where you describe why you kept the output the same.
         If it looks wrong, please correct the data_found field, output the fixed JSON with the new field
         "adjustments", and describe why you changed the output from the previous prompt. 
-        Do not output any additional text outside of the JSON. 
+        Do not output any additional text outside of the JSON. Do not edit the existing reasoning field.
         Thank you.'''
 
         # Combine the intro_message with the prompt and the final_text separated by a newline.
