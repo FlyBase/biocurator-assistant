@@ -4,8 +4,11 @@ Specifically, check if any genetic objects such as genes, alleles,
 aberrations, including non-melanogaster objects, are mentioned. 
 Confirm if the paper lacks any such genetic entities, indicating it 
 contains no curatable material in this context. If there is no genetically curatable material, 
-as described previously, please use false when filling out the found_data. 
-If not, please use true when filling out the found_data."
+as described previously, please use true when filling out the found_data. 
+If not, please use false when filling out the found_data. Please keep in mind,
+although the field is called found_data, we want it to be false when data IS found
+and true when data IS NOT found. This sounds counter-intuitive, but it is the way
+we process this flag."
 
 phys_int: "Review the publication for reports on physical interactions 
 involving D. melanogaster proteins or RNA. Look for methods like yeast 
