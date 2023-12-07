@@ -61,8 +61,6 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
     thread = client.beta.threads.create()
     thread_id = thread.id
 
-    list_of_messages = []
-
     # Loading prompts from the YAML file.
     prompts = yaml.safe_load(open(yaml_file, 'r'))
     for prompt, value in prompts.items():
