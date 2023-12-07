@@ -11,7 +11,8 @@ and true when data IS NOT found. This sounds counter-intuitive, but it is the wa
 we process this flag. nocur is short for no curatable material."
 
 phys_int: "Review the publication for reports on physical interactions 
-involving D. melanogaster proteins or RNA. Look for methods like yeast 
+involving D. melanogaster proteins or RNA. Only interactions with the species
+D. melanogaster should be considered. Look for methods like yeast 
 two-hybrid, co-immunoprecipitation (Co-IP), GST pull-down, miRNA luciferase 
 assays, and others. Detail any protein-protein, protein-RNA interactions, 
 but exclude protein-DNA interactions from this search. Be sure to look for descriptions of 
