@@ -136,9 +136,9 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         # Create the error correction prompt.
         intro_message = '''Below is the prompt you were given 
         for the last message and the output you returned. 
-        DO NOT REFERENCING THE FILE and please check to see if your 
-        reasoning field matches the triage_result field in the JSON you created. 
-        Please use the logic declared out at the end of your last prompt below. 
+        DO NOT REFERENCE OR USE THE UPLOADED FILE.
+        Please only check to see if your "reasoning" field matches the "triage_result" field in the JSON you created. 
+        Please use the logic declared at the end of your last prompt below to verify this request.
         Typically, it does match, but sometimes there's a mistake. 
         If it looks OK, please output the same JSON as before and add a two fields "adjustments" and "adjustments_true_false".
         In "adjustments", please indicate your reason for not changing the "triage_result" field. In the "adjustments_true_false" field, please write false.
