@@ -42,9 +42,10 @@ This should include any Drosophila gene or a foreign gene introduced into the fl
 such as GAL4 or a human gene. Identify if the study mentions UAS transgenes, 
 genomic rescue transgenes, or RNAi transgenes. Remember, these transgenic contructs
 must be NEWLY CREATED in this publication and not obtained from stock centers
-or other laboratories. Only new transgenic contructs are considered for curation. If there are 
-new transgenic constructs as described previously in this prompt, please use true when filling out 
-the triage_result. If not, please use false when filling out the triage_result."
+or other laboratories. Only new transgenic contructs are considered for curation. Pay close attention to any 
+references following the description of a construct, as that might indicate it was
+previously published. If there are new transgenic constructs as described previously in this prompt, 
+please use true when filling out the triage_result. If not, please use false when filling out the triage_result."
 
 # disease: "Please investigate the publication for descriptions or uses of Drosophila 
 # as models of human disease. Identify any experimental data that show
