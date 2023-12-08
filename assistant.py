@@ -137,12 +137,12 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         intro_message = '''Below is the prompt you were given 
         for the last message and the output you returned. 
         DO NOT REFERENCING THE FILE and please check to see if your 
-        reasoning field matches the data_found field in the JSON you created. 
+        reasoning field matches the triage_result field in the JSON you created. 
         Please use the logic declared out at the end of your last prompt below. 
         Typically, it does match, but sometimes there's a mistake. 
         If it looks OK, please output the same JSON as before and add a two fields "adjustments" and "adjustments_true_false".
-        In "adjustments", please indicate your reason for not changing the "data_found" field. In the "adjustments_true_false" field, please write false.
-        If it looks wrong, please change the "data_found" field ONLY, output the fixed JSON with two new fields "adjustments" and "adjustments_true_false".
+        In "adjustments", please indicate your reason for not changing the "triage_result" field. In the "adjustments_true_false" field, please write false.
+        If it looks wrong, please change the "triage_result" field ONLY, output the fixed JSON with two new fields "adjustments" and "adjustments_true_false".
         In "adjustments", please indicate your reason for changing the data. In the "adjustments_true_false" field, please write true.
         DO NOT output any additional text outside of the JSON. DO NOT edit the existing "reasoning" field.
         Thank you.'''
