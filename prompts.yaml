@@ -1,14 +1,15 @@
-nocur: "As a biocurator, review the provided scientific 
-publication and determine if there is no genetically curatable material. 
-Specifically, check if any genetic objects such as genes, alleles, 
-aberrations, including non-melanogaster objects, are mentioned. 
+nocur: "As a biocurator, please review the provided scientific 
+publication and determine if there is NO genetically curatable material.
+We want to know if curation is not needed, hence the no curation or nocur prompt. 
+Specifically, check if NO genetic objects such as genes, alleles, or
+aberrations, including non-melanogaster objects, exist in the publication.
 Confirm if the paper LACKS any such genetic entities, indicating it 
-contains NO genetically curatable material (nocur) in this context. 
-If there is no genetically curatable material, 
-as described previously, please use true when filling out the triage_result field.
-If there is genetically curatable material, please use false when filling out the triage_result field."
+contains NO genetically curatable material in this context.
+Again, we want to look for the ABSENCE of genetic objects in the publication. NO genetically curatable material.
+If there is NO genetically curatable material, please use true when filling out the triage_result field.
+If there IS genetically curatable material, please use false when filling out the triage_result field."
 
-phys_int: "Review the publication for reports on physical interactions 
+phys_int: "Please review the publication for reports on physical interactions 
 involving D. melanogaster proteins or RNA. Only interactions with the species
 D. melanogaster should be considered. Look for methods like yeast 
 two-hybrid, co-immunoprecipitation (Co-IP), GST pull-down, miRNA luciferase 
@@ -19,7 +20,7 @@ If there is physical interaction data, as described previously,
 please use true when filling out the triage_result. 
 If not, please use false when filling out the triage_result."
 
-new_al: "Scrutinize the scientific publication to identify any mention 
+new_al: "Please scrutinize the scientific publication to identify any mention 
 of new classical mutant alleles or chromosomal 
 aberrations in the Drosophila genome. Specifically, 
 look for evidence of traditional genetic manipulation 
@@ -34,7 +35,7 @@ new classical mutant alleles or chromosomal aberrations in the Drosophila genome
 as described previously, please use true when filling out the triage_result. If not,
 please use false when filling out the triage_result."
 
-new_transg: "Examine the publication for the creation of new transgenic constructs. 
+new_transg: "Please examine the publication for the creation of new transgenic constructs. 
 This should include any Drosophila gene or a foreign gene introduced into the fly genome, 
 such as GAL4 or a human gene. Identify if the study mentions UAS transgenes, 
 genomic rescue transgenes, or RNAi transgenes. Remember, these transgenic contructs
@@ -43,7 +44,7 @@ or other laboratories. Only new transgenic contructs are considered for curation
 new transgenic constructs as described previously, please use true when filling out 
 the triage_result. If not, please use false when filling out the triage_result."
 
-disease: "Investigate the publication for descriptions or uses of Drosophila 
+disease: "Please investigate the publication for descriptions or uses of Drosophila 
 as models of human disease. Identify any experimental data that show
 mutation of Drosophila genes, introduction of human genes into flies, 
 chemical exposure, infection, or environmental changes leading to 
