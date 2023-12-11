@@ -170,7 +170,11 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         with open(output_file, 'w') as f:
             f.write(final_text_to_write)
 
-def main():
+def extract_number(filename):
+    match = re.search(r'(\d+)', filename)
+    return int(match.group(0)) if match else 0
+
+def main():   
     # Read configurations from the config.cfg file
     config = read_config('config.cfg')
 
@@ -203,11 +207,19 @@ def main():
 
     input_dir = Path(config['DEFAULT']['input_dir'])
 
+    # Get the list of files to process (excluding .gitignore)
+    input_files = sorted(
+        [f for f in input_dir.glob('*.pdf') if f.name != '.gitignore'],
+        key=lambda x: extract_number(x.name)
+    )
+    total_files = len(input_files)
+
+    # Start the timer
+    start_time = time.time()
+
     # Processing each file in the input directory
-    for input_file in input_dir.glob('*'):
-        if input_file.name == '.gitignore':
-            continue  # Skip processing .gitignore file
-        print(f"Processing file: {input_file}", flush=True)
+    for index, input_file in enumerate(input_files, start=1):
+        print(f"Processing file: {input_file} ({index}/{total_files})", flush=True)
         file_id, assistant_file_id = upload_and_attach_file(client, input_file, assistant_id)
 
         # Running the biocuration process on each file
@@ -219,6 +231,11 @@ def main():
             file_ids=[],
         )
         client.files.delete(file_id)
+
+    # Calculate and print the total time elapsed
+    end_time = time.time()
+    total_time_elapsed = end_time - start_time
+    print(f"Total time elapsed: {total_time_elapsed:.2f} seconds")
 
     # Deleting the assistant after processing is complete
     print(f"Deleting assistant: {assistant_id}", flush=True)

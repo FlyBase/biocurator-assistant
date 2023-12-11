@@ -1,63 +1,67 @@
-# nocur: "As a biocurator, please review the provided scientific 
-# publication and determine if there is NO genetically curatable material.
-# We want to know if curation is not needed, hence the no curation or nocur prompt. 
-# Specifically, check if NO genetic objects such as genes, alleles, or
-# aberrations, including non-melanogaster objects, exist in the publication.
-# Confirm if the paper LACKS any such genetic entities, indicating it 
-# contains NO genetically curatable material in this context.
-# Again, we want to look for the ABSENCE of genetic objects in the publication. NO genetically curatable material.
-# If there is NO genetically curatable material, as described previously in this prompt, 
-# please use true when filling out the triage_result field.
-# If there IS genetically curatable material, as described previously in this prompt,
-# please use false when filling out the triage_result field."
+nocur: "Please review the provided scientific 
+publication and determine if there is NO genetically curatable material.
+We want to know if curation is not needed, hence the no curation or nocur prompt. 
+Specifically, check if NO genetic objects such as genes, alleles, or
+aberrations, including non-melanogaster objects, exist in the publication.
+Confirm if the paper LACKS any such genetic entities, indicating it 
+contains NO genetically curatable material in this context.
+Again, we want to look for the ABSENCE of genetic objects in the publication. NO genetically curatable material.
+If there is NO genetically curatable material, as described previously in this prompt, 
+please use true when filling out the triage_result field.
+If there IS genetically curatable material, as described previously in this prompt,
+please use false when filling out the triage_result field."
 
-# phys_int: "Please review the publication for reports on physical interactions 
-# involving D. melanogaster proteins or RNA. Only interactions with the species
-# D. melanogaster should be considered. Look for methods like yeast 
-# two-hybrid, co-immunoprecipitation (Co-IP), GST pull-down, miRNA luciferase 
-# assays, and others. Detail any protein-protein, protein-RNA interactions, 
-# but exclude protein-DNA interactions from this search. Be sure to look for descriptions of 
-# actual interactions and not just implications of interactions in the publication.
-# If there is physical interaction data, as described previously in this prompt, 
-# please use true when filling out the triage_result. 
-# If not, please use false when filling out the triage_result."
+phys_int: "Please review the publication for reports on physical interactions 
+involving D. melanogaster proteins or RNA. Only interactions with the species
+D. melanogaster should be considered. Look for methods like yeast 
+two-hybrid, co-immunoprecipitation (Co-IP), GST pull-down, miRNA luciferase 
+assays, and others. Detail any protein-protein, protein-RNA interactions, 
+but exclude protein-DNA interactions from this search. Be sure to look for descriptions of 
+actual interactions and not just implications of interactions in the publication.
+If there is physical interaction data, as described previously in this prompt, 
+please use true when filling out the triage_result. 
+If not, please use false when filling out the triage_result."
 
-# new_al: "Please scrutinize the scientific publication to identify any mention 
-# of new classical mutant alleles or chromosomal 
-# aberrations in the Drosophila genome. Specifically, 
-# look for evidence of traditional genetic manipulation 
-# techniques such as EMS or CRISPR-induced mutations, P-element 
-# excisions or insertions, and chromosomal deletions or duplications. 
-# Report any findings of classical genetic modifications. Remember, these alleles
-# must be NEWLY CREATED in this publication and not obtained from stock centers
-# or other laboratories. Only new alleles are considered for curation. Also, 
-# it's important to remember that these classical alleles would NOT be used
-# in transgenic expression systems such as GAL4/UAS or RNAi, for example. If there are 
-# new classical mutant alleles or chromosomal aberrations in the Drosophila genome,
-# as described previously in this prompt, please use true when filling out the triage_result. If not,
-# please use false when filling out the triage_result."
+new_al: "Please review the scientific publication to identify any mention 
+of new classical mutant alleles or chromosomal 
+aberrations in the Drosophila genome. Specifically, 
+look for evidence of traditional genetic manipulation 
+techniques such as EMS or CRISPR-induced mutations, P-element 
+excisions or insertions, and chromosomal deletions or duplications. 
+Report any findings of classical genetic modifications. Remember, these alleles
+must be NEWLY CREATED in this publication and not obtained from stock centers
+or other laboratories. Review any Materials and Methods sections carefully.
+Pay close attention to any references following the description of an allele, 
+as that might indicate it was previously published. 
+Only newly created alleles are considered for curation. Also, it's important to remember that 
+these classical alleles would NOT be used in transgenic expression systems such as 
+GAL4/UAS or RNAi, for example. If there are new classical mutant alleles or 
+chromosomal aberrations in the Drosophila genome, as described previously in this prompt, 
+please use true when filling out the triage_result. If not, please use 
+false when filling out the triage_result."
 
-new_transg: "Please examine the publication for the creation of new transgenic constructs. 
+new_transg: "Please review the publication for the creation of new transgenic constructs. 
 This should include any Drosophila gene or a foreign gene introduced into the fly genome, 
 such as GAL4 or a human gene. Identify if the study mentions UAS transgenes, 
 genomic rescue transgenes, or RNAi transgenes. Remember, these transgenic contructs
 must be NEWLY CREATED in this publication and not obtained from stock centers
-or other laboratories. Only new transgenic contructs are considered for curation. Pay close attention to any 
+or other laboratories. Review any Materials and Methods sections carefully.
+Only new transgenic contructs are considered for curation. Pay close attention to any 
 references following the description of a construct, as that might indicate it was
 previously published. If there are new transgenic constructs as described previously in this prompt, 
 please use true when filling out the triage_result. If not, please use false when filling out the triage_result."
 
-# disease: "Please investigate the publication for descriptions or uses of Drosophila 
-# as models of human disease. Identify any experimental data that show
-# mutation of Drosophila genes, introduction of human genes into flies, 
-# chemical exposure, infection, or environmental changes leading to 
-# disease phenotypes. The publication should use Drosophila in an active manner
-# that models a human disease and not just mention diseases without experimental
-# evidence to create a drosophila model. Again, we aren't interested if disease is
-# simply mentioned in the introduction or discussion, it needs to be integral in some way
-# to the experiments described in the paper. If there are Drosophila as models of human 
-# disease as described previously in this prompt, please use true when filling out the triage_result. 
-# If not, please use false when filling out the triage_result."
+disease: "Please review the publication for descriptions or uses of Drosophila 
+as models of human disease. Identify any experimental data that show
+mutation of Drosophila genes, introduction of human genes into flies, 
+chemical exposure, infection, or environmental changes leading to 
+disease phenotypes. The publication should use Drosophila in an active manner
+that models a human disease and not just mention diseases without experimental
+evidence to create a drosophila model. Again, we aren't interested if disease is
+simply mentioned in the introduction or discussion, it needs to be integral in some way
+to the experiments described in the paper. If there are Drosophila as models of human 
+disease as described previously in this prompt, please use true when filling out the triage_result. 
+If not, please use false when filling out the triage_result."
 
 # neur_exp: "As a biocurator focusing on VFB expression curation, 
 # # analyze the scientific publication for any mention of Dmel driver 
