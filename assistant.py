@@ -170,10 +170,6 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         with open(output_file, 'w') as f:
             f.write(final_text_to_write)
 
-def extract_number(filename):
-    match = re.search(r'(\d+)', filename)
-    return int(match.group(0)) if match else 0
-
 def main():   
     # Read configurations from the config.cfg file
     config = read_config('config.cfg')
@@ -209,9 +205,9 @@ def main():
 
     # Get the list of files to process (excluding .gitignore)
     input_files = sorted(
-        [f for f in input_dir.glob('*.pdf') if f.name != '.gitignore'],
-        key=lambda x: extract_number(x.name)
+        [f for f in input_dir.glob('*.pdf') if f.name != '.gitignore']
     )
+
     total_files = len(input_files)
 
     # Start the timer
