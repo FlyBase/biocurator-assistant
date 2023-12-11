@@ -233,6 +233,13 @@ def main():
     total_time_elapsed = end_time - start_time
     print(f"Total time elapsed: {total_time_elapsed:.2f} seconds")
 
+    # Calculate the average time per file
+    if total_files > 0:  # To avoid division by zero
+        average_time_per_file = total_time_elapsed / total_files
+        print(f"Average time per input file: {average_time_per_file:.2f} seconds")
+    else:
+        print("No files were processed.")
+
     # Deleting the assistant after processing is complete
     print(f"Deleting assistant: {assistant_id}", flush=True)
     response = client.beta.assistants.delete(assistant_id)
