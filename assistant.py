@@ -170,6 +170,7 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         with open(output_file, 'w') as f:
             f.write(final_text_to_write)
 
+
 def main():   
     # Read configurations from the config.cfg file
     config = read_config('config.cfg')
@@ -227,7 +228,7 @@ def main():
             file_ids=[],
         )
         client.files.delete(file_id)
-
+          
     # Calculate and print the total time elapsed
     end_time = time.time()
     total_time_elapsed = end_time - start_time
