@@ -54,26 +54,7 @@ def delete_file_from_openai(file_id):
     except openai.error.OpenAIError as e:
         print(f"Error: {e}")
 
-# Function to process queries using the Biocurator assistant.
-def process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, yaml_file, output_dir, pdf_file, timeout_seconds):
-
-    # Creating a new thread for processing.
-    thread = client.beta.threads.create()
-    thread_id = thread.id
-
-    list_of_messages = []
-
-    # Loading prompts from the YAML file.
-    prompts = yaml.safe_load(open(yaml_file, 'r'))
-    for prompt, value in prompts.items():
-        print('Processing prompt: ' + prompt, flush=True)
-        # Sending each prompt to the assistant for processing.
-        thread_message = client.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=value,
-        file_ids=[file_id])
-
+def run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds):
         # Initiating the processing run.
         run = client.beta.threads.runs.create(thread_id=thread_id, assistant_id=assistant_id)
         run_id = run.id
@@ -120,20 +101,77 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
 
         # Retrieving and processing the messages from the run.
         messages = client.beta.threads.messages.list(
-        thread_id=thread.id
+        thread_id=thread_id
         )
+        
         first_message = messages.data[0]
         first_message_content = first_message.content[0].text.value
 
         # Cleaning the text content by removing citations.
         final_text = re.sub(r"【.*?】", "", first_message_content)
 
+        return final_text
+
+# Function to process queries using the Biocurator assistant.
+def process_queries_with_biocurator(client, assistant_id, file_id, assistant_file_id, yaml_file, output_dir, pdf_file, timeout_seconds):
+
+    # Creating a new thread for processing.
+    thread = client.beta.threads.create()
+    thread_id = thread.id
+
+    # Loading prompts from the YAML file.
+    prompts = yaml.safe_load(open(yaml_file, 'r'))
+    for prompt, value in prompts.items():
+        print('Processing prompt: ' + prompt, flush=True)
+        # Sending each prompt to the assistant for processing.
+        thread_message = client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content=value,
+        file_ids=[file_id])
+
+        # Running the thread and retrieving the last message.
+        final_text = run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds)
+
+        # Create the error correction prompt.
+        intro_message = '''Below is the prompt you were given 
+        for the last message and the output you returned. 
+        DO NOT REFERENCE OR USE THE UPLOADED FILE.
+        Please only check to see if your "reasoning" field matches the "triage_result" field in the JSON you created. 
+        Please use the logic declared at the end of your last prompt below to verify this request.
+        Typically, it does match, but sometimes there's a mistake. 
+        If it looks OK, please output the same JSON as before and add a two fields "adjustments" and "adjustments_true_false".
+        In "adjustments", please indicate your reason for not changing the "triage_result" field. In the "adjustments_true_false" field, please write false.
+        If it looks wrong, please change the "triage_result" field ONLY, output the fixed JSON with two new fields "adjustments" and "adjustments_true_false".
+        In "adjustments", please indicate your reason for changing the data. In the "adjustments_true_false" field, please write true.
+        DO NOT output any additional text outside of the JSON. DO NOT edit the existing "reasoning" field.
+        Thank you.'''
+
+        # Combine the intro_message with the prompt and the final_text separated by a newline.
+        error_correction_prompt = intro_message + "\nOriginal prompt:\n" + value + "\nPreviously generated response:\n" + final_text
+
+        # Add this to the thread as a message.
+        thread_message = client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content=error_correction_prompt)
+
+        # Remove the file from the assistant before running the thread again.
+        my_updated_assistant = client.beta.assistants.update(
+            assistant_id,
+            file_ids=[],
+        )
+
+        # Run the thread again and retrieve the last message.
+        final_text_to_write = run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds)
+
         # Saving the processed content to an output file.
         output_file = Path(output_dir) / (pdf_file.stem + '_' + prompt + '.txt')
         with open(output_file, 'w') as f:
-            f.write(final_text)
+            f.write(final_text_to_write)
 
-def main():
+
+def main():   
     # Read configurations from the config.cfg file
     config = read_config('config.cfg')
 
@@ -166,11 +204,19 @@ def main():
 
     input_dir = Path(config['DEFAULT']['input_dir'])
 
+    # Get the list of files to process (excluding .gitignore)
+    input_files = sorted(
+        [f for f in input_dir.glob('*.pdf') if f.name != '.gitignore']
+    )
+
+    total_files = len(input_files)
+
+    # Start the timer
+    start_time = time.time()
+
     # Processing each file in the input directory
-    for input_file in input_dir.glob('*'):
-        if input_file.name == '.gitignore':
-            continue  # Skip processing .gitignore file
-        print(f"Processing file: {input_file}", flush=True)
+    for index, input_file in enumerate(input_files, start=1):
+        print(f"Processing file: {input_file} ({index}/{total_files})", flush=True)
         file_id, assistant_file_id = upload_and_attach_file(client, input_file, assistant_id)
 
         # Running the biocuration process on each file
@@ -182,6 +228,18 @@ def main():
             file_ids=[],
         )
         client.files.delete(file_id)
+          
+    # Calculate and print the total time elapsed
+    end_time = time.time()
+    total_time_elapsed = end_time - start_time
+    print(f"Total time elapsed: {total_time_elapsed:.2f} seconds")
+
+    # Calculate the average time per file
+    if total_files > 0:  # To avoid division by zero
+        average_time_per_file = total_time_elapsed / total_files
+        print(f"Average time per input file: {average_time_per_file:.2f} seconds")
+    else:
+        print("No files were processed.")
 
     # Deleting the assistant after processing is complete
     print(f"Deleting assistant: {assistant_id}", flush=True)

@@ -1,61 +1,72 @@
-genes: "Your task is to analyze the scientific publication provided and extract names of Drosophila genes that are mentioned within. 
-Focus on genes that are either highlighted multiple times or are central to the experimentation discussed in the paper. 
-List these genes in an unordered format.
+nocur: "Please review the provided scientific 
+publication and determine if there is NO genetically curatable material.
+We want to know if curation is not needed, hence the no curation or nocur prompt. 
+Specifically, check if NO genetic objects such as genes, alleles, or
+aberrations, including non-melanogaster objects, exist in the publication.
+Confirm if the paper LACKS any such genetic entities, indicating it 
+contains NO genetically curatable material in this context.
+Again, we want to look for the ABSENCE of genetic objects in the publication. NO genetically curatable material.
+If there is NO genetically curatable material, as described previously in this prompt, 
+please use true when filling out the triage_result field.
+If there IS genetically curatable material, as described previously in this prompt,
+please use false when filling out the triage_result field."
 
-Please exclude any specific alleles, mutations, or gene constructs. 
-If an allele or modification is mentioned, list it as its base gene name 
-(e.g., 'rut1' or 'rutMB1951' should be listed simply as 'rut'). 
-Also, omit genes with constructs like -GFP, -GAL4, -lacZ, etc.
+phys_int: "Please review the publication for reports on physical interactions 
+involving D. melanogaster proteins or RNA. Only interactions with the species
+D. melanogaster should be considered. Look for methods like yeast 
+two-hybrid, co-immunoprecipitation (Co-IP), GST pull-down, miRNA luciferase 
+assays, and others. Detail any protein-protein, protein-RNA interactions, 
+but exclude protein-DNA interactions from this search. Be sure to look for descriptions of 
+actual interactions and not just implications of interactions in the publication.
+If there is physical interaction data, as described previously in this prompt, 
+please use true when filling out the triage_result. 
+If not, please use false when filling out the triage_result."
 
-After compiling the list, cross-check it against known Drosophila gene names 
-to ensure accuracy and remove any entries that do not meet these criteria. 
-The final list should be clear and concise, reflecting a high level of 
-expertise in Drosophila genetics and adherence to established nomenclature standards."
+new_al: "Please review the scientific publication to identify any mention 
+of new classical mutant alleles or chromosomal 
+aberrations in the Drosophila genome. Specifically, 
+look for evidence of traditional genetic manipulation 
+techniques such as EMS or CRISPR-induced mutations, P-element 
+excisions or insertions, and chromosomal deletions or duplications. 
+Report any findings of classical genetic modifications. Remember, these alleles
+must be NEWLY CREATED in this publication and not obtained from stock centers
+or other laboratories. Review any Materials and Methods sections carefully.
+Pay close attention to any references following the description of an allele, 
+as that might indicate it was previously published. 
+Only newly created alleles are considered for curation. Also, it's important to remember that 
+these classical alleles would NOT be used in transgenic expression systems such as 
+GAL4/UAS or RNAi, for example. If there are new classical mutant alleles or 
+chromosomal aberrations in the Drosophila genome, as described previously in this prompt, 
+please use true when filling out the triage_result. If not, please use 
+false when filling out the triage_result."
 
-alleles: "Your task is to meticulously analyze the provided scientific publication and 
-identify all Drosophila alleles that are mentioned. Focus on alleles that play a significant role 
-in the research, either being frequently referenced or central to the experimental 
-procedures or findings in the paper. Please compile these alleles into an unordered list.
+new_transg: "Please review the publication for the creation of new transgenic constructs. 
+This should include any Drosophila gene or a foreign gene introduced into the fly genome, 
+such as GAL4 or a human gene. Identify if the study mentions UAS transgenes, 
+genomic rescue transgenes, or RNAi transgenes. Remember, these transgenic contructs
+must be NEWLY CREATED in this publication and not obtained from stock centers
+or other laboratories. Review any Materials and Methods sections carefully.
+Only new transgenic contructs are considered for curation. Pay close attention to any 
+references following the description of a construct, as that might indicate it was
+previously published. If there are new transgenic constructs as described previously in this prompt, 
+please use true when filling out the triage_result. If not, please use false when filling out the triage_result."
 
-When listing the alleles, ensure each one is accurately represented in accordance 
-with the details provided in the publication. Pay close attention to the context 
-in which each allele is mentioned to ascertain its relevance to the study's objectives and findings.
+disease: "Please review the publication for descriptions or uses of Drosophila 
+as models of human disease. Identify any experimental data that show
+mutation of Drosophila genes, introduction of human genes into flies, 
+chemical exposure, infection, or environmental changes leading to 
+disease phenotypes. The publication should use Drosophila in an active manner
+that models a human disease and not just mention diseases without experimental
+evidence to create a drosophila model. Again, we aren't interested if disease is
+simply mentioned in the introduction or discussion, it needs to be integral in some way
+to the experiments described in the paper. If there are Drosophila as models of human 
+disease as described previously in this prompt, please use true when filling out the triage_result. 
+If not, please use false when filling out the triage_result."
 
-After assembling the list, review it to confirm the accuracy and relevance 
-of each allele within the scope of the research, ensuring compliance with 
-the established nomenclature and scientific standards. The final list should 
-be clear, concise, and reflect a thorough understanding of the paper's content related to Drosophila genetics."
-
-disease: "Your task is to thoroughly examine the provided scientific publication 
-and identify any human diseases that are referenced, particularly focusing on 
-those diseases that are being modeled in Drosophila as part of the research objectives. 
-Compile a list of these diseases, ensuring that each one is directly relevant to the study's goals or findings.
-
-In your analysis, pay special attention to how these human diseases are connected 
-to the Drosophila models. Identify diseases that are central to the paper, 
-such as those being used to understand specific genetic mechanisms or to simulate disease progression.
-
-Once you have compiled the list, review it to ensure that each disease 
-mentioned is integral to the research and not just a passing reference. 
-The final list should be concise, accurately reflecting the diseases that 
-are of primary importance to the study's objectives, and demonstrating 
-how Drosophila is used as a model organism to advance understanding of these human conditions."
-
-phys_int: "Your task is to meticulously review the provided scientific 
-publication to identify and list examples of physical interactions between proteins. 
-Focus specifically on interactions that are substantiated by commonly used experimental 
-methods in protein interaction studies. Examples of such methods include 
-co-immunoprecipitation, yeast two-hybrid screening, fluorescence resonance energy 
-transfer (FRET), bioluminescence resonance energy transfer (BRET), and affinity purification followed by mass spectrometry.
-
-For each instance of a protein-protein interaction, provide a brief description 
-of the interaction and specify the experimental method used to determine it. 
-Ensure that each interaction and method listed is directly cited or described 
-in the research paper, with a focus on their relevance to the study's objectives.
-
-After compiling your list, review it for accuracy and relevance. 
-Each entry should clearly state the proteins involved in the interaction, 
-the nature of their interaction, and the experimental method utilized to observe it. 
-The final list should be concise and informative, reflecting a deep understanding 
-of the study's approach to investigating protein-protein interactions and the 
-significance of these interactions within the broader context of the research."
+# neur_exp: "As a biocurator focusing on VFB expression curation, 
+# # analyze the scientific publication for any mention of Dmel driver 
+# # or hemidriver expression. Look for expression primarily in neural 
+# # or glial structures, contributions to defining or refining neuron 
+# # types or neural circuits, or insights into neuron functions. 
+# # Note whether the publication uses drivers/hemidrivers and meets the 
+# # criteria for neural expression curation."
