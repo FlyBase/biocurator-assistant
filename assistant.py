@@ -131,45 +131,44 @@ def process_queries_with_biocurator(client, assistant_id, file_id, assistant_fil
         file_ids=[file_id])
 
         # Running the thread and retrieving the last message.
-        final_text = run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds)
-
-        # Create the error correction prompt.
-        intro_message = '''Below is the prompt you were given 
-        for the last message and the output you returned. 
-        DO NOT REFERENCE OR USE THE UPLOADED FILE.
-        Please only check to see if your "reasoning" field matches the "triage_result" field in the JSON you created. 
-        Please use the logic declared at the end of your last prompt below to verify this request.
-        Typically, it does match, but sometimes there's a mistake. 
-        If it looks OK, please output the same JSON as before and add a two fields "adjustments" and "adjustments_true_false".
-        In "adjustments", please indicate your reason for not changing the "triage_result" field. In the "adjustments_true_false" field, please write false.
-        If it looks wrong, please change the "triage_result" field ONLY, output the fixed JSON with two new fields "adjustments" and "adjustments_true_false".
-        In "adjustments", please indicate your reason for changing the data. In the "adjustments_true_false" field, please write true.
-        DO NOT output any additional text outside of the JSON. DO NOT edit the existing "reasoning" field.
-        Thank you.'''
-
-        # Combine the intro_message with the prompt and the final_text separated by a newline.
-        error_correction_prompt = intro_message + "\nOriginal prompt:\n" + value + "\nPreviously generated response:\n" + final_text
-
-        # Add this to the thread as a message.
-        thread_message = client.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=error_correction_prompt)
-
-        # Remove the file from the assistant before running the thread again.
-        my_updated_assistant = client.beta.assistants.update(
-            assistant_id,
-            file_ids=[],
-        )
-
-        # Run the thread again and retrieve the last message.
         final_text_to_write = run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds)
+
+        # # Create the error correction prompt.
+        # intro_message = '''Below is the prompt you were given 
+        # for the last message and the output you returned. 
+        # DO NOT REFERENCE OR USE THE UPLOADED FILE.
+        # Please only check to see if your "reasoning" field matches the "triage_result" field in the JSON you created. 
+        # Please use the logic declared at the end of your last prompt below to verify this request.
+        # Typically, it does match, but sometimes there's a mistake. 
+        # If it looks OK, please output the same JSON as before and add a two fields "adjustments" and "adjustments_true_false".
+        # In "adjustments", please indicate your reason for not changing the "triage_result" field. In the "adjustments_true_false" field, please write false.
+        # If it looks wrong, please change the "triage_result" field ONLY, output the fixed JSON with two new fields "adjustments" and "adjustments_true_false".
+        # In "adjustments", please indicate your reason for changing the data. In the "adjustments_true_false" field, please write true.
+        # DO NOT output any additional text outside of the JSON. DO NOT edit the existing "reasoning" field.
+        # Thank you.'''
+
+        # # Combine the intro_message with the prompt and the final_text separated by a newline.
+        # error_correction_prompt = intro_message + "\nOriginal prompt:\n" + value + "\nPreviously generated response:\n" + final_text
+
+        # # Add this to the thread as a message.
+        # thread_message = client.beta.threads.messages.create(
+        # thread_id=thread_id,
+        # role="user",
+        # content=error_correction_prompt)
+
+        # # Remove the file from the assistant before running the thread again.
+        # my_updated_assistant = client.beta.assistants.update(
+        #     assistant_id,
+        #     file_ids=[],
+        # )
+
+        # # Run the thread again and retrieve the last message.
+        # final_text_to_write = run_thread_return_last_message(client, thread_id, assistant_id, timeout_seconds)
 
         # Saving the processed content to an output file.
         output_file = Path(output_dir) / (pdf_file.stem + '_' + prompt + '.txt')
         with open(output_file, 'w') as f:
             f.write(final_text_to_write)
-
 
 def main():   
     # Read configurations from the config.cfg file
