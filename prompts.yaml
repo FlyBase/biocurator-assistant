@@ -51,17 +51,17 @@ references following the description of a construct, as that might indicate it w
 previously published. If there are new transgenic constructs as described previously in this prompt, 
 please use true when filling out the triage_result. If not, please use false when filling out the triage_result."
 
-disease: "Please review the publication for descriptions or uses of Drosophila 
-as models of human disease. Identify any experimental data that show
-mutation of Drosophila genes, introduction of human genes into flies, 
-chemical exposure, infection, or environmental changes leading to 
-disease phenotypes. The publication should use Drosophila in an active manner
-that models a human disease and not just mention diseases without experimental
-evidence to create a drosophila model. Again, we aren't interested if disease is
-simply mentioned in the introduction or discussion, it needs to be integral in some way
-to the experiments described in the paper. If there are Drosophila as models of human 
-disease as described previously in this prompt, please use true when filling out the triage_result. 
-If not, please use false when filling out the triage_result."
+# disease: "Please review the publication for descriptions or uses of Drosophila 
+# as models of human disease. Identify any experimental data that show
+# mutation of Drosophila genes, introduction of human genes into flies, 
+# chemical exposure, infection, or environmental changes leading to 
+# disease phenotypes. The publication should use Drosophila in an active manner
+# that models a human disease and not just mention diseases without experimental
+# evidence to create a drosophila model. Again, we aren't interested if disease is
+# simply mentioned in the introduction or discussion, it needs to be integral in some way
+# to the experiments described in the paper. If there are Drosophila as models of human 
+# disease as described previously in this prompt, please use true when filling out the triage_result. 
+# If not, please use false when filling out the triage_result."
 
 # neur_exp: "As a biocurator focusing on VFB expression curation, 
 # # analyze the scientific publication for any mention of Dmel driver 
