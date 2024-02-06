@@ -1,0 +1,32 @@
+[
+    {
+        "type": "function",
+        "function": {
+            "name": "identify_disease_and_entity",
+            "description": "Identify a disease and the relationship between the disease and a single C. elegans entity.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "disease": {
+                        "type": "string",
+                        "description": "The name of the disease"
+                    },
+                    "c_elegans_entity": {
+                        "type": "string",
+                        "description": "A single C. elegans entity involved with the disease"
+                    },
+                    "entity_type": {
+                        "type": "string",
+                        "enum": ["gene", "protein", "allele", "transgene"],
+                        "description": "The type of C. elegans entity"
+                    },
+                    "evidence": {
+                        "type": "string",
+                        "description": "Evidence for the entity's involvement with the disease"
+                    }
+                },
+                "required": ["disease", "c_elegans_entity", "entity_type", "evidence"]
+            }
+        }
+    }
+]
