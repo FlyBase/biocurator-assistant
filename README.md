@@ -1,6 +1,6 @@
 # Biocurator Assistant with GPT-4
 ## Overview
-Biocurator Assistant is a Dockerized tool leveraging OpenAI's GPT-4 model for biocuration tasks. It processes PDF or text documents, extracting and analyzing scientific data for biological research. The tool creates a custom Assistant using OpenAI's Assistants API, which is tailored to manage data flow and perform specific curation tasks using AI techniques.
+Biocurator Assistant is a Dockerized tool leveraging OpenAI's GPT-4 model for biocuration tasks. It processes PDF or text documents, extracting and analyzing scientific data. The tool creates a custom Assistant using OpenAI's Assistants API, which can be taylored to perform biocuration tasks using AI techniques.
 
 ## Requirements
 - Docker
@@ -15,7 +15,7 @@ The Biocurator Assistant uses three main configuration files to control its beha
     - `output_dir`: Directory where the output files will be saved.
     - `prompts_yaml_file`: The YAML file containing prompts for data extraction.
     - `timeout_seconds`: Timeout duration for the OpenAI Assistant API.
-    - `model`: The OpenAI model to be used (_e.g._, gpt-4-0125-preview).
+    - `model`: The OpenAI model to be used (_e.g._, `gpt-4-0125-preview`).
     - `assistant_instructions`: Instructions for the Assistant's biocuration tasks.
 
 - `functions.json`: This JSON file defines how the GPT-4 LLM should structure its output data. Create custom functions to match your extraction needs.
